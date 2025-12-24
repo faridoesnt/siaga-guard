@@ -1,0 +1,45 @@
+name: Deploy SIAGA Guard Web (Prod)
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    environment: prod
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ⬇️ ENV DIBUAT SEBELUM BUILD
+      - name: Generate production env
+        run: |
+          cat <<EOF > .env.production
+          NEXT_PUBLIC_API_BASE_URL=https://api.siaga.click
+          EOF
+
+      - name: Upload source
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "."
+          target: "/home/farid/siaga/siaga-guard-web"
+          strip_components: 1
+
+      - name: Deploy & switch Admin Web
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /home/farid/siaga/infra
+            ./deploy-and-switch-service.sh siaga-guard
