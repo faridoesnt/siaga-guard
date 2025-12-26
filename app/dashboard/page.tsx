@@ -345,6 +345,9 @@ export default function DashboardPage() {
   const name =
     me?.name || getStoredUser()?.name || "Satpam";
 
+  const shift = dashboard?.shift || null;
+  const isLiburShift = !!shift && shift.name.toLowerCase() === "libur";
+
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-900 text-slate-50">
@@ -440,28 +443,31 @@ export default function DashboardPage() {
                   );
                 })()}
                 <div>
-                  <span className="font-medium text-slate-200">
-                    Shift:{" "}
-                  </span>
-                  {dashboard?.shift ? (
-                    <span>
-                      {dashboard.shift.name} ({dashboard.shift.start_time} -{" "}
-                      {dashboard.shift.end_time})
-                    </span>
+                  <span className="font-medium text-slate-200">Shift: </span>
+                  {shift ? (
+                    isLiburShift ? (
+                      <span>Libur (tidak perlu absen)</span>
+                    ) : (
+                      <span>
+                        {shift.name} ({shift.start_time} - {shift.end_time})
+                      </span>
+                    )
                   ) : (
                     <span className="text-slate-400">Tidak ada shift.</span>
                   )}
                 </div>
-                <div>
-                  <span className="font-medium text-slate-200">
-                    Status kehadiran:{" "}
-                  </span>
-                  <span>
-                    {status === "NONE" && "Belum absen"}
-                    {status === "CLOCKED_IN" && "Sudah clock in"}
-                    {status === "CLOCKED_OUT" && "Sudah clock out"}
-                  </span>
-                </div>
+                {!isLiburShift && (
+                  <div>
+                    <span className="font-medium text-slate-200">
+                      Status kehadiran:{" "}
+                    </span>
+                    <span>
+                      {status === "NONE" && "Belum absen"}
+                      {status === "CLOCKED_IN" && "Sudah clock in"}
+                      {status === "CLOCKED_OUT" && "Sudah clock out"}
+                    </span>
+                  </div>
+                )}
                 {dashboard?.attendance?.late_status && (
                   <div>
                     <span className="font-medium text-slate-200">
@@ -505,6 +511,13 @@ export default function DashboardPage() {
             className="flex w-full items-center justify-center rounded-2xl bg-violet-500 px-4 py-4 text-center text-base font-semibold text-slate-50 shadow"
           >
             PERMINTAAN TUKAR SHIFT
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/schedule")}
+            className="flex w-full items-center justify-center rounded-2xl bg-slate-800 px-4 py-3 text-center text-sm font-semibold text-slate-100 shadow"
+          >
+            LIHAT JADWAL SHIFT
           </button>
           <button
             type="button"

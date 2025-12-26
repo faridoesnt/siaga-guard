@@ -71,6 +71,11 @@ export default function HistoryPage() {
     );
   }
 
+  // Sembunyikan hari dengan shift Libur dari riwayat absensi.
+  const visibleItems = items.filter(
+    (item) => !(item.shift && item.shift.name && item.shift.name.toLowerCase() === "libur")
+  );
+
   return (
     <div className="flex min-h-screen flex-col bg-slate-900 text-slate-50">
       <header className="flex items-center justify-between px-4 py-3">
@@ -121,13 +126,13 @@ export default function HistoryPage() {
             <p className="text-xs text-slate-300">Memuat riwayat...</p>
           ) : error ? (
             <p className="text-xs text-red-400">{error}</p>
-          ) : items.length === 0 ? (
+          ) : visibleItems.length === 0 ? (
             <p className="text-xs text-slate-300">
               Belum ada riwayat absensi pada rentang tanggal ini.
             </p>
           ) : (
             <div className="mt-2 space-y-3">
-              {items.map((item) => {
+              {visibleItems.map((item) => {
                 const status = item.attendance?.status ?? "NONE";
                 const late = item.attendance?.late_status;
                 const dateText = item.date;
