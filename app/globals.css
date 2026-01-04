@@ -1,8 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 body {
   @apply antialiased;
 }
 
+p {
+  color: #334155;
+}
+
+span {
+  color: #334155;
+}
+
+h1,
+h2 {
+  color: #0F172A;
+}

@@ -10,10 +10,6 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
   reactStrictMode: true,
-  experimental: {
-    appDir: true,
-  },
 });
 
 export default nextConfig;
-
