@@ -5,14 +5,16 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn/releases .yarn/releases
+COPY .yarn/install-state.gz .yarn/install-state.gz
+RUN corepack enable && yarn install --immutable
 
 # ⬇️ copy env BEFORE build
 COPY .env.production .env.production
 COPY . .
 
-RUN npm run build
+RUN yarn build
 
 # =========================
 # Runtime
@@ -30,4 +32,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=3s --retries=5 \
   CMD wget -qO- http://localhost:3000/api/health || exit 1
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
