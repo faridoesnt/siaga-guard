@@ -1,9 +1,11 @@
 {
   "name": "SIAGA Guard",
-  "short_name": "SIAGA Guard",
-  "start_url": "/login",
+  "short_name": "SIAGA",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#020617",
+  "background_color": "#F1F5F9",
   "theme_color": "#0f172a",
   "orientation": "portrait-primary",
   "icons": [
@@ -19,4 +21,3 @@
     }
   ]
 }
-
