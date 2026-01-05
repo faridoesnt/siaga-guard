@@ -3,8 +3,7 @@
 import { ApiError, ApiResponse } from "./types";
 import { getToken, clearToken } from "./auth";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8686";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export async function apiFetch<T>(
   path: string,
