@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthGuard } from "@/lib/useAuthGuard";
 import { apiFetch } from "@/lib/apiClient";
-import { ApiError, SatpamDashboard, Attendance } from "@/lib/types";
+import { ApiError, SatpamDashboard, Attendance, SatpamDashboardShift, LateStatus } from "@/lib/types";
 import { clearToken, setTodayAttendanceId } from "@/lib/auth";
 import {
   CalendarClock,
@@ -336,6 +336,9 @@ export default function DashboardPage() {
   const shift = dashboard?.shift || null;
   const isLiburShift = !!shift && shift.name.toLowerCase() === "libur";
 
+  const lateStatus = dashboard?.attendance?.late_status;
+  const clockInTime = dashboard?.attendance?.clock_in_time || null;
+
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-900 text-slate-50">
@@ -439,13 +442,13 @@ export default function DashboardPage() {
                     </span>
                   </div>
                 )}
-                {dashboard?.attendance?.late_status && (
-                  <div>
-                    <span className="font-medium text-slate-200">
-                      Keterlambatan:{" "}
-                    </span>
-                    <span>{dashboard.attendance.late_status}</span>
-                  </div>
+                {lateStatus && (
+                  <LateSummary
+                    status={lateStatus}
+                    date={dashboard?.date}
+                    shift={dashboard?.shift || null}
+                    clockInTime={clockInTime}
+                  />
                 )}
               </div>
             </>
@@ -538,6 +541,26 @@ export default function DashboardPage() {
         )}
 
       </main>
+    </div>
+  );
+}
+
+type LateSummaryProps = {
+  status: LateStatus;
+  date?: string | null;
+  shift: SatpamDashboardShift | null;
+  clockInTime?: string | null;
+};
+
+import { formatLateStatusDisplay } from "@/lib/lateStatus";
+
+function LateSummary({ status, date, shift, clockInTime }: LateSummaryProps) {
+  const text = formatLateStatusDisplay(status, date ?? null, shift, clockInTime);
+
+  return (
+    <div>
+      <span className="font-medium text-slate-200">Keterlambatan: </span>
+      <span>{text}</span>
     </div>
   );
 }

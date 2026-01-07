@@ -6,6 +6,7 @@ import { useAuthGuard } from "@/lib/useAuthGuard";
 import { apiFetch } from "@/lib/apiClient";
 import { ApiError, SatpamAttendanceHistoryItem } from "@/lib/types";
 import { clearToken } from "@/lib/auth";
+import { formatLateStatusDisplay } from "@/lib/lateStatus";
 
 function defaultRange() {
   const today = new Date();
@@ -133,7 +134,7 @@ export default function HistoryPage() {
             <div className="mt-2 space-y-3">
               {visibleItems.map((item) => {
                 const status = item.attendance?.status ?? "NONE";
-                const late = item.attendance?.late_status;
+                const lateStatus = item.attendance?.late_status ?? null;
                 const dateText = item.date;
                 const clockIn = item.attendance?.clock_in_time;
                 const clockOut = item.attendance?.clock_out_time;
@@ -209,9 +210,15 @@ export default function HistoryPage() {
                         </p>
                       </div>
                     </div>
-                    {late && (
+                    {lateStatus && (
                       <p className="mt-1 text-[10px] text-slate-300">
-                        Keterlambatan: {late}
+                        Keterlambatan:{" "}
+                        {formatLateStatusDisplay(
+                          lateStatus,
+                          item.date,
+                          item.shift,
+                          clockIn
+                        )}
                       </p>
                     )}
                   </div>
