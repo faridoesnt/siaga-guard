@@ -6,6 +6,7 @@ import { useAuthGuard } from "@/lib/useAuthGuard";
 import { apiFetch } from "@/lib/apiClient";
 import { ApiError, SatpamDashboard } from "@/lib/types";
 import { clearToken, getTodayAttendanceId } from "@/lib/auth";
+import { todayLocalISO } from "@/lib/date";
 
 export default function ActivityPage() {
   const ready = useAuthGuard();
@@ -33,8 +34,7 @@ export default function ActivityPage() {
       setLoading(true);
       setError(null);
       try {
-        const today = new Date();
-        const dateStr = today.toISOString().slice(0, 10);
+        const dateStr = todayLocalISO();
         const dash = await apiFetch<SatpamDashboard>(
           `/v1/satpam/dashboard?date=${dateStr}`
         );

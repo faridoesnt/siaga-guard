@@ -6,6 +6,7 @@ import { useAuthGuard } from "@/lib/useAuthGuard";
 import { apiFetch } from "@/lib/apiClient";
 import { ApiError, SatpamAttendanceHistoryItem } from "@/lib/types";
 import { clearToken } from "@/lib/auth";
+import { formatLocalDateISO } from "@/lib/date";
 
 function getDefaultMonthYear() {
   const now = new Date();
@@ -15,8 +16,8 @@ function getDefaultMonthYear() {
 function buildRange(month: number, year: number) {
   const start = new Date(year, month - 1, 1);
   const end = new Date(year, month, 0);
-  const startStr = start.toISOString().slice(0, 10);
-  const endStr = end.toISOString().slice(0, 10);
+  const startStr = formatLocalDateISO(start);
+  const endStr = formatLocalDateISO(end);
   return { startStr, endStr };
 }
 

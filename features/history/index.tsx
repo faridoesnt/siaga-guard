@@ -7,13 +7,14 @@ import { apiFetch } from "@/lib/apiClient";
 import { ApiError, SatpamAttendanceHistoryItem } from "@/lib/types";
 import { clearToken } from "@/lib/auth";
 import { formatLateStatusDisplay } from "@/lib/lateStatus";
+import { formatLocalDateISO } from "@/lib/date";
 
 function defaultRange() {
   const today = new Date();
-  const end = today.toISOString().slice(0, 10);
+  const end = formatLocalDateISO(today);
   const startDate = new Date(today);
   startDate.setDate(startDate.getDate() - 30);
-  const start = startDate.toISOString().slice(0, 10);
+  const start = formatLocalDateISO(startDate);
   return { start, end };
 }
 

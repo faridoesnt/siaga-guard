@@ -4,7 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthGuard } from "@/lib/useAuthGuard";
 import { apiFetch } from "@/lib/apiClient";
-import { ApiError, SatpamDashboard, Attendance, SatpamDashboardShift, LateStatus } from "@/lib/types";
+import {
+  ApiError,
+  SatpamDashboard,
+  Attendance,
+  SatpamDashboardShift,
+  LateStatus,
+} from "@/lib/types";
 import { clearToken, setTodayAttendanceId } from "@/lib/auth";
 import {
   CalendarClock,
@@ -14,6 +20,7 @@ import {
 } from "lucide-react";
 import ClockInCard from "@/features/clockIn";
 import ClockOutCard from "@/features/clockout";
+import { todayLocalISO, formatLocalDateISO } from "@/lib/date";
 
 export default function DashboardPage() {
   const ready = useAuthGuard();
@@ -59,8 +66,7 @@ export default function DashboardPage() {
       setLoading(true);
       setError(null);
       try {
-        const today = new Date();
-        const dateStr = today.toISOString().slice(0, 10);
+        const dateStr = todayLocalISO();
         const dashResp = await apiFetch<SatpamDashboard>(
           `/v1/satpam/dashboard?date=${dateStr}`
         );
@@ -246,8 +252,7 @@ export default function DashboardPage() {
 
       setTodayAttendanceId(attendance.id);
 
-      const today = new Date();
-      const dateStr = today.toISOString().slice(0, 10);
+      const dateStr = todayLocalISO();
       const dashResp = await apiFetch<SatpamDashboard>(
         `/v1/satpam/dashboard?date=${dateStr}`
       );
@@ -309,8 +314,7 @@ export default function DashboardPage() {
         body: form,
       });
 
-      const today = new Date();
-      const dateStr = today.toISOString().slice(0, 10);
+      const dateStr = todayLocalISO();
       const dashResp = await apiFetch<SatpamDashboard>(
         `/v1/satpam/dashboard?date=${dateStr}`
       );
@@ -380,7 +384,7 @@ export default function DashboardPage() {
                     if (openClockIn && dashboardDate) {
                       const dt = new Date(openClockIn);
                       if (!Number.isNaN(dt.getTime())) {
-                        const openDateStr = dt.toISOString().slice(0, 10);
+                        const openDateStr = formatLocalDateISO(dt);
                         if (openDateStr === dashboardDate) {
                           return null;
                         }
@@ -407,13 +411,15 @@ export default function DashboardPage() {
                     return (
                       <div className="rounded-xl bg-amber-500/15 px-3 py-2 text-[11px] text-amber-50">
                         <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-200">
-                          Ada absensi yang belum clock-out
+                          Shift sebelumnya masih berjalan
                         </p>
                         <p className="mt-1 leading-snug">
-                          Masih ada absensi shift sebelumnya
-                          {detail}. Silakan lakukan{" "}
-                          <span className="font-semibold">CLOCK OUT</span>{" "}
-                          terlebih dahulu sebelum absen untuk shift hari ini.
+                          Kamu masih tercatat menjalankan shift sebelumnya
+                          {detail}. Tombol{" "}
+                          <span className="font-semibold">CLOCK IN</span> untuk
+                          shift hari ini akan aktif setelah shift sebelumnya
+                          selesai dan kamu melakukan{" "}
+                          <span className="font-semibold">CLOCK OUT</span>.
                         </p>
                       </div>
                     );
