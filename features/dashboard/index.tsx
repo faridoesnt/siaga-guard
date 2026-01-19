@@ -415,11 +415,13 @@ export default function DashboardPage() {
                         </p>
                         <p className="mt-1 leading-snug">
                           Kamu masih tercatat menjalankan shift sebelumnya
-                          {detail}. Tombol{" "}
+                          {detail}. Kamu bisa menekan{" "}
+                          <span className="font-semibold">CLOCK OUT</span>{" "}
+                          untuk mengakhiri shift tersebut sekarang, atau
+                          langsung menekan{" "}
                           <span className="font-semibold">CLOCK IN</span> untuk
-                          shift hari ini akan aktif setelah shift sebelumnya
-                          selesai dan kamu melakukan{" "}
-                          <span className="font-semibold">CLOCK OUT</span>.
+                          shift hari ini; sistem akan otomatis menutup shift
+                          sebelumnya.
                         </p>
                       </div>
                     );
